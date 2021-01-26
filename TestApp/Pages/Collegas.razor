@@ -1,0 +1,48 @@
+﻿@page "/collegas"
+
+@using TestApp.Data
+@inject CollegaServices collegaService
+@inject IJSRuntime JSRuntime
+<h3>Collegas</h3>
+Als het goed is kom je op deze pagina
+
+<body onbeforeunload="TestDataTablesRemove('#example')">
+    @if (collegas == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table" id="example">
+            <thead>
+                <tr>
+                    <th>Naam</th>
+                    <th>Email</th>
+                    <th>Telefoon</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var collega in collegas)
+                {
+                    <tr>
+                        <td>@collega.Naam</td>
+                        <td>@collega.Email</td>
+                        <td>@collega.TelefoonNummer</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+    }
+</body>
+
+@code {
+    private Collega[] collegas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        collegas = await collegaService.GetCollega();
+        await JSRuntime.InvokeAsync<object>("TestDataTablesAdd", "#example");
+    }
+}
